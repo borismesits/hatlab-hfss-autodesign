@@ -17,6 +17,10 @@ def update_Lj_simple(omega_old, omega_new, Lj_old):
 
      return Lj_old*(omega_old/omega_new)**2
 
+def update_Lj_g3(omega_old, omega_new, Lj_old):
+
+     return Lj_old*omega_new/omega_old
+
 def update_gap(chi_old, chi_new, gap_old):
      return gap_old*chi_old/chi_new
 

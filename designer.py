@@ -173,20 +173,20 @@ class TubeDesigner():
 
         print('Running pyEPR...')
 
-        with redirect_stdout(io.StringIO()) as f:
-            eprd = epr.DistributedAnalysis(self.pinfo)
-            # if 1:
-            # eprd.hfss_report_full_convergence() # report convergence
-            eprd.do_EPR_analysis(append_analysis=False,
-                                 variations=str(eprd.variations[-1]))  # calculate energy participation ratio
+        # with redirect_stdout(io.StringIO()) as f:
+        eprd = epr.DistributedAnalysis(self.pinfo)
+        # if 1:
+        # eprd.hfss_report_full_convergence() # report convergence
+        eprd.do_EPR_analysis(append_analysis=False,
+                             variations=str(eprd.variations[-1]))  # calculate energy participation ratio
 
-            epra = epr.QuantumAnalysis(eprd.data_filename, variations=str(eprd.variations[-1]))
+        epra = epr.QuantumAnalysis(eprd.data_filename, variations=str(eprd.variations[-1]))
 
-            epra_results = epra.analyze_variation(variation=str(eprd.variations[-1]), print_result=False)
+        epra_results = epra.analyze_variation(variation=str(eprd.variations[-1]), print_result=False)
 
-            self.eprd = eprd
-            self.epra = epra
-            self.epra_results = epra_results
+        self.eprd = eprd
+        self.epra = epra
+        self.epra_results = epra_results
 
         print('...done!')
 
@@ -258,7 +258,7 @@ class TubeDesigner():
                 c3max = snail.c3max
                 tv_old = np.abs(snail_physics.g_n(c3max, [ZPF, ZPF, ZPF]))
 
-                physics_function = tube_physics.update_Lj_simple
+                physics_function = tube_physics.update_Lj_g3
                 tv_unit = 'MHz'
                 dv_unit = 'nH'
                 tv_factor = 1e6
@@ -441,6 +441,7 @@ class TubeDesigner():
             counter += 1
 
             if counter == max_num:
+                raise Warning('Optimizer reached maximum number of iterations.')
                 break
 
 if __name__ == '__main__':
