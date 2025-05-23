@@ -19,6 +19,6 @@ def WISPE_next_guess(x_list, y_list, guess_step=1):
         index_highest = np.argsort(y_list)[-1]
         index_second = np.argsort(y_list)[-2]
 
-        x_guess = (x_list[index_highest] + x_list[index_second])/2
+        x_guess = (x_list[index_highest] + x_list[index_second])/2 + guess_step*(np.random.rand()*0.5-1)*0.01
         
     return x_guess

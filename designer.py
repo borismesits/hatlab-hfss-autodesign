@@ -9,10 +9,12 @@ from contextlib import redirect_stdout
 import io
 
 class TubeDesigner():
-    def __init__(self, project_path, project_name, design_name, version=None, new_session=False):
+    def __init__(self, project_path, project_name, design_name, version=None, new_session=False, updateDesignOn=True):
         self.project_path = project_path
         self.project_name = project_name
         self.design_name = design_name
+
+        self.updateDesignOn = updateDesignOn
 
         self.hfss_instance = Hfss(project_name, design_name, new_desktop_session=new_session)
 
@@ -303,7 +305,7 @@ class TubeDesigner():
             if mode2_index is None:
                 mode_string = 'For ' + target_dict['target_type'] + ' of ' + target_dict['mode1']
             else:
-                mode_string = 'For ' + target_dict['target_type'] + ' of ' + target_dict['mode1'] + ' and' + target_dict['mode2']
+                mode_string = 'For ' + target_dict['target_type'] + ' of ' + target_dict['mode1'] + ' and ' + target_dict['mode2']
             if error > 1e3:
                 self.status = -1
                 return
@@ -318,7 +320,9 @@ class TubeDesigner():
 
                 dv_new = speed*dv_new + (1-speed)*dv_old
 
-                self.hfss_instance[target_dict['design_var']] = str(dv_new) + dv_unit
+                if self.updateDesignOn:
+                    self.hfss_instance[target_dict['design_var']] = str(dv_new) + dv_unit
+
                 print(
                     mode_string + ', to make %.3f %s into %.3f %s, %s was changed from %.3f %s to %.3f %s.' % (
                         tv_old / tv_factor, tv_unit, tv_new / tv_factor, tv_unit, target_dict['design_var'], dv_old,
@@ -389,7 +393,7 @@ class TubeDesigner():
 
             counter += 1
 
-            if (counter == 10):
+            if (counter == 5):
                 break
 
         best_index = np.where(Q_list == np.max(Q_list))
